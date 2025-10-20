@@ -40,15 +40,11 @@ export const patientRegister = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const login = catchAsyncErrors(async (req, res, next) => {
-  const { email, password, confirmPassword, role } = req.body;
-  if (!email || !password || !confirmPassword || !role) {
-    return next(new ErrorHandler("Please Fill Full Form!", 400));
+  const { email, password, role } = req.body;
+  if (!email || !password) {
+    return next(new ErrorHandler("Please provide email and password!", 400));
   }
-  if (password !== confirmPassword) {
-    return next(
-      new ErrorHandler("Password & Confirm Password Do Not Match!", 400)
-    );
-  }
+
   const user = await User.findOne({ email }).select("+password");
   if (!user) {
     return next(new ErrorHandler("Invalid Email Or Password!", 400));
@@ -58,10 +54,38 @@ export const login = catchAsyncErrors(async (req, res, next) => {
   if (!isPasswordMatch) {
     return next(new ErrorHandler("Invalid Email Or Password!", 400));
   }
-  if (role !== user.role) {
-    return next(new ErrorHandler(`User Not Found With This Role!`, 400));
+
+  if (role && role !== user.role) {
+    return next(new ErrorHandler("User Not Found With This Role!", 400));
   }
-  generateToken(user, "Login Successfully!", 201, res);
+
+  generateToken(user, "Login Successfully!", 200, res);
+});
+
+export const createDummyAdmin = catchAsyncErrors(async (req, res, next) => {
+  const adminData = {
+    firstName: "Admin",
+    lastName: "User",
+    email: "Admin@gmail.com",
+    phone: "1234567890",
+    nic: "ADMIN123",
+    dob: "1990-01-01",
+    gender: "Other",
+    password: "Admin@123",
+    role: "Admin"
+  };
+
+  const isRegistered = await User.findOne({ email: adminData.email });
+  if (isRegistered) {
+    return next(new ErrorHandler("Admin already exists!", 400));
+  }
+
+  const admin = await User.create(adminData);
+  res.status(201).json({
+    success: true,
+    message: "Dummy admin created successfully",
+    admin
+  });
 });
 
 export const addNewAdmin = catchAsyncErrors(async (req, res, next) => {
@@ -194,7 +218,6 @@ export const getUserDetails = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-// Logout function for dashboard admin
 export const logoutAdmin = catchAsyncErrors(async (req, res, next) => {
   res
     .status(201)
@@ -208,7 +231,6 @@ export const logoutAdmin = catchAsyncErrors(async (req, res, next) => {
     });
 });
 
-// Logout function for frontend patient
 export const logoutPatient = catchAsyncErrors(async (req, res, next) => {
   res
     .status(201)

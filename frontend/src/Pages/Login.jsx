@@ -9,32 +9,29 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [role, setRole] = useState("Patient");
 
   const navigateTo = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await axios
-        .post(
-          "http://localhost:5000/api/v1/user/login",
-          { email, password, confirmPassword, role: "Patient" },
-          {
-            withCredentials: true,
-            headers: { "Content-Type": "application/json" },
-          }
-        )
-        .then((res) => {
-          toast.success(res.data.message);
-          setIsAuthenticated(true);
-          navigateTo("/");
-          setEmail("");
-          setPassword("");
-          setConfirmPassword("");
-        });
+      const res = await axios.post(
+        "http://localhost:5000/api/v1/user/login",
+        { email, password, role },
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      toast.success(res.data.message);
+      setIsAuthenticated(true);
+      navigateTo("/");
+      setEmail("");
+      setPassword("");
+      setRole("Patient");
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Login failed");
     }
   };
 
@@ -46,10 +43,10 @@ const Login = () => {
     <>
       <div className="container form-component login-form">
         <h2>Sign In</h2>
-        <p>Please Login To Continue</p>
+        <p>Please sign in to access the MindFit Counselling dashboard.</p>
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat culpa
-          voluptas expedita itaque ex, totam ad quod error?
+          Sign in as a Patient to book or view appointments, or as Admin to
+          manage doctors, appointments and users.
         </p>
         <form onSubmit={handleLogin}>
           <input
@@ -64,12 +61,11 @@ const Login = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
+          <select value={role} onChange={(e) => setRole(e.target.value)}>
+            <option value="Patient">Patient</option>
+            <option value="Admin">Admin</option>
+            <option value="Doctor">Doctor</option>
+          </select>
           <div
             style={{
               gap: "10px",
