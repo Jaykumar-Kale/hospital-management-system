@@ -58,8 +58,9 @@ const Register = () => {
         <h2>Sign Up</h2>
         <p>Please Sign Up To Continue</p>
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat culpa
-          voluptas expedita itaque ex, totam ad quod error?
+          Join MindFit Counselling to embark on your journey towards better mental health. 
+          Our platform connects you with experienced professionals who provide personalized 
+          support and guidance for your emotional wellbeing.
         </p>
         <form onSubmit={handleRegistration}>
           <div>

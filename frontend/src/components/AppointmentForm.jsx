@@ -8,29 +8,29 @@ const AppointmentForm = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [nic, setNic] = useState("");
+  // const [nic, setNic] = useState("");
   const [dob, setDob] = useState("");
   const [gender, setGender] = useState("");
   const [appointmentDate, setAppointmentDate] = useState("");
-  const [department, setDepartment] = useState("Pediatrics");
-  const [doctorFirstName, setDoctorFirstName] = useState("");
-  const [doctorLastName, setDoctorLastName] = useState("");
+  // const [department, setDepartment] = useState("Pediatrics");
+  // const [doctorFirstName, setDoctorFirstName] = useState("");
+  // const [doctorLastName, setDoctorLastName] = useState("");
   const [address, setAddress] = useState("");
   const [hasVisited, setHasVisited] = useState(false);
 
-  const departmentsArray = [
-    "Pediatrics",
-    "Orthopedics",
-    "Cardiology",
-    "Neurology",
-    "Oncology",
-    "Radiology",
-    "Physical Therapy",
-    "Dermatology",
-    "ENT",
-  ];
+  // const departmentsArray = [
+  //   "Pediatrics",
+  //   "Orthopedics",
+  //   "Cardiology",
+  //   "Neurology",
+  //   "Oncology",
+  //   "Radiology",
+  //   "Physical Therapy",
+  //   "Dermatology",
+  //   "ENT",
+  // ];
 
-  const [doctors, setDoctors] = useState([]);
+  //const [doctors, setDoctors] = useState([]);
   useEffect(() => {
     const fetchDoctors = async () => {
       const { data } = await axios.get(
@@ -53,13 +53,13 @@ const AppointmentForm = () => {
           lastName,
           email,
           phone,
-          nic,
+          //nic,
           dob,
           gender,
           appointment_date: appointmentDate,
-          department,
-          doctor_firstName: doctorFirstName,
-          doctor_lastName: doctorLastName,
+          //department,
+          //doctor_firstName: doctorFirstName,
+          //doctor_lastName: doctorLastName,
           hasVisited: hasVisitedBool,
           address,
         },
@@ -73,13 +73,13 @@ const AppointmentForm = () => {
         setLastName(""),
         setEmail(""),
         setPhone(""),
-        setNic(""),
+        //setNic(""),
         setDob(""),
         setGender(""),
         setAppointmentDate(""),
-        setDepartment(""),
-        setDoctorFirstName(""),
-        setDoctorLastName(""),
+        //setDepartment(""),
+        //setDoctorFirstName(""),
+        //setDoctorLastName(""),
         setHasVisited(""),
         setAddress("");
     } catch (error) {
@@ -121,12 +121,12 @@ const AppointmentForm = () => {
             />
           </div>
           <div>
-            <input
+            {/* <input
               type="number"
               placeholder="NIC"
               value={nic}
               onChange={(e) => setNic(e.target.value)}
-            />
+            /> */}
             <input
               type="date"
               placeholder="Date of Birth"
@@ -148,7 +148,7 @@ const AppointmentForm = () => {
             />
           </div>
           <div>
-            <select
+            {/* <select
               value={department}
               onChange={(e) => {
                 setDepartment(e.target.value);
@@ -163,29 +163,8 @@ const AppointmentForm = () => {
                   </option>
                 );
               })}
-            </select>
-            {/* <select
-              value={`${doctorFirstName} ${doctorLastName}`}
-              onChange={(e) => {
-                const [firstName, lastName] = e.target.value.split(" ");
-                setDoctorFirstName(firstName);
-                setDoctorLastName(lastName);
-              }}
-              disabled={!department}
-            >
-              <option value="">Select Doctor</option>
-              {doctors
-                .filter((doctor) => doctor.doctorDepartment === department)
-                .map((doctor, index) => (
-                  <option
-                    value={`${doctor.firstName} ${doctor.lastName}`}
-                    key={index}
-                  >
-                    {doctor.firstName} {doctor.lastName}
-                  </option>
-                ))}
             </select> */}
-            <select
+            {/* <select
               value={JSON.stringify({
                 firstName: doctorFirstName,
                 lastName: doctorLastName,
@@ -211,7 +190,7 @@ const AppointmentForm = () => {
                     {doctor.firstName} {doctor.lastName}
                   </option>
                 ))}
-            </select>
+            </select> */}
           </div>
           <textarea
             rows="10"

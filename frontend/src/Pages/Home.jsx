@@ -9,7 +9,7 @@ const Home = () => {
     <>
       <Hero
         title={
-          "Welcome to ZeeCare Medical Institute | Your Trusted Healthcare Provider"
+          "Welcome to Mindfit Counseling | Your Trusted Counselling Provider"
         }
         imageUrl={"/hero.png"}
       />

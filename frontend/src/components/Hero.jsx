@@ -7,12 +7,12 @@ const Hero = ({ title, imageUrl }) => {
         <div className="banner">
           <h1>{title}</h1>
           <p>
-            ZeeCare Medical Institute is a state-of-the-art facility dedicated
-            to providing comprehensive healthcare services with compassion and
-            expertise. Our team of skilled professionals is committed to
-            delivering personalized care tailored to each patient's needs. At
-            ZeeCare, we prioritize your well-being, ensuring a harmonious
-            journey towards optimal health and wellness.
+            Welcome to MinFit Counselling, led by Dr. Mansi Karanjakar. We provide 
+            professional mental health services and counselling in a safe, supportive 
+            environment. Our approach focuses on holistic well-being, helping you 
+            develop effective coping strategies and achieve emotional balance. 
+            Dr. Karanjakar and her team are committed to guiding you through your 
+            mental health journey with expertise and compassion.
           </p>
         </div>
         <div className="banner">
