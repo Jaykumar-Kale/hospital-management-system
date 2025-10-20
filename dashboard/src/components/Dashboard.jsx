@@ -40,7 +40,7 @@ const Dashboard = () => {
       );
       toast.success(data.message);
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Failed to update status");
     }
   };
 
@@ -49,36 +49,72 @@ const Dashboard = () => {
     return <Navigate to={"/login"} />;
   }
 
+  // ...existing code...
+  // compute quick stats for MindFit Counselling
+  const totalAppointments = appointments.length;
+  const uniqueDoctorsCount = new Set(
+    appointments.map((a) => (a.doctor ? a.doctor._id : null)).filter(Boolean)
+  ).size;
+
+  const upcomingAppointment = appointments
+    .filter((a) => {
+      const d = new Date(a.appointment_date);
+      return !isNaN(d) && d > new Date();
+    })
+    .sort(
+      (a, b) => new Date(a.appointment_date).getTime() - new Date(b.appointment_date).getTime()
+    )[0];
+
+  const formatDate = (dt) => {
+    if (!dt) return "N/A";
+    const d = new Date(dt);
+    if (isNaN(d)) return dt.toString().substring(0, 16);
+    return d.toLocaleString();
+  };
+
   return (
     <>
       <section className="dashboard page">
         <div className="banner">
           <div className="firstBox">
-            <img src="/doc.png" alt="docImg" />
+            <img src="/doc.png" alt="Dr Mansi Karanjkar" />
             <div className="content">
               <div>
-                <p>Hello ,</p>
-                <h5>
-                  {admin &&
-                    `${admin.firstName} ${admin.lastName}`}{" "}
-                </h5>
+                <p>Welcome to</p>
+                <h5>MindFit Counselling — Dr. Mansi Karanjkar</h5>
               </div>
               <p>
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                Facilis, nam molestias. Eaque molestiae ipsam commodi neque.
-                Assumenda repellendus necessitatibus itaque.
+                Specialized mental health and counselling services focusing on
+                anxiety, stress management, relationship counselling and
+                personal growth. Appointments are tailored to create a safe,
+                confidential space for healing and progress.
+              </p>
+              <p style={{ marginTop: 8, fontSize: 13 }}>
+                Clinic contact: +91 98765 43210 • mindfit@clinic.example
+              </p>
+              <p style={{ marginTop: 4, fontSize: 13 }}>
+                Working hours: Mon–Sat, 9:00 AM – 6:00 PM
               </p>
             </div>
           </div>
+
           <div className="secondBox">
             <p>Total Appointments</p>
-            <h3>1500</h3>
+            <h3>{totalAppointments}</h3>
+            <p style={{ fontSize: 13, marginTop: 6 }}>
+              Upcoming: {upcomingAppointment ? formatDate(upcomingAppointment.appointment_date) : "No upcoming appointments"}
+            </p>
           </div>
+
           <div className="thirdBox">
-            <p>Registered Doctors</p>
-            <h3>10</h3>
+            <p>Registered Therapists</p>
+            <h3>{uniqueDoctorsCount}</h3>
+            <p style={{ fontSize: 13, marginTop: 6 }}>
+              Active cases and follow-ups are handled with confidentiality.
+            </p>
           </div>
         </div>
+
         <div className="banner">
           <h5>Appointments</h5>
           <table>
@@ -87,7 +123,7 @@ const Dashboard = () => {
                 <th>Patient</th>
                 <th>Date</th>
                 <th>Doctor</th>
-                <th>Department</th>
+                {/* <th>Department</th> */}
                 <th>Status</th>
                 <th>Visited</th>
               </tr>
@@ -97,7 +133,7 @@ const Dashboard = () => {
                 ? appointments.map((appointment) => (
                     <tr key={appointment._id}>
                       <td>{`${appointment.firstName} ${appointment.lastName}`}</td>
-                      <td>{appointment.appointment_date.substring(0, 16)}</td>
+                      <td>{formatDate(appointment.appointment_date)}</td>
                       <td>{`${appointment.doctor.firstName} ${appointment.doctor.lastName}`}</td>
                       <td>{appointment.department}</td>
                       <td>
@@ -125,14 +161,18 @@ const Dashboard = () => {
                           </option>
                         </select>
                       </td>
-                      <td>{appointment.hasVisited === true ? <GoCheckCircleFill className="green"/> : <AiFillCloseCircle className="red"/>}</td>
+                      <td>
+                        {appointment.hasVisited === true ? (
+                          <GoCheckCircleFill className="green" />
+                        ) : (
+                          <AiFillCloseCircle className="red" />
+                        )}
+                      </td>
                     </tr>
                   ))
                 : "No Appointments Found!"}
             </tbody>
           </table>
-
-          {}
         </div>
       </section>
     </>

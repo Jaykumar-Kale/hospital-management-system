@@ -15,33 +15,33 @@ const AddNewDoctor = () => {
   const [dob, setDob] = useState("");
   const [gender, setGender] = useState("");
   const [password, setPassword] = useState("");
-  const [doctorDepartment, setDoctorDepartment] = useState("");
-  const [docAvatar, setDocAvatar] = useState("");
-  const [docAvatarPreview, setDocAvatarPreview] = useState("");
+  //const [doctorDepartment, setDoctorDepartment] = useState("");
+  //const [docAvatar, setDocAvatar] = useState("");
+  //const [docAvatarPreview, setDocAvatarPreview] = useState("");
 
   const navigateTo = useNavigate();
 
-  const departmentsArray = [
-    "Pediatrics",
-    "Orthopedics",
-    "Cardiology",
-    "Neurology",
-    "Oncology",
-    "Radiology",
-    "Physical Therapy",
-    "Dermatology",
-    "ENT",
-  ];
+  // const departmentsArray = [
+  //   "Pediatrics",
+  //   "Orthopedics",
+  //   "Cardiology",
+  //   "Neurology",
+  //   "Oncology",
+  //   "Radiology",
+  //   "Physical Therapy",
+  //   "Dermatology",
+  //   "ENT",
+  // ];
 
-  const handleAvatar = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      setDocAvatarPreview(reader.result);
-      setDocAvatar(file);
-    };
-  };
+  // const handleAvatar = (e) => {
+  //   const file = e.target.files[0];
+  //   const reader = new FileReader();
+  //   reader.readAsDataURL(file);
+  //   reader.onload = () => {
+  //     setDocAvatarPreview(reader.result);
+  //     setDocAvatar(file);
+  //   };
+  // };
 
   const handleAddNewDoctor = async (e) => {
     e.preventDefault();
@@ -55,8 +55,8 @@ const AddNewDoctor = () => {
       formData.append("nic", nic);
       formData.append("dob", dob);
       formData.append("gender", gender);
-      formData.append("doctorDepartment", doctorDepartment);
-      formData.append("docAvatar", docAvatar);
+      //formData.append("doctorDepartment", doctorDepartment);
+      //formData.append("docAvatar", docAvatar);
       await axios
         .post("http://localhost:5000/api/v1/user/doctor/addnew", formData, {
           withCredentials: true,
@@ -150,7 +150,7 @@ const AddNewDoctor = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <select
+              {/* <select
                 value={doctorDepartment}
                 onChange={(e) => {
                   setDoctorDepartment(e.target.value);
@@ -164,7 +164,7 @@ const AddNewDoctor = () => {
                     </option>
                   );
                 })}
-              </select>
+              </select> */}
               <button type="submit">Register New Doctor</button>
             </div>
           </div>
