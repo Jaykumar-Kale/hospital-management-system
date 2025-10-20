@@ -19,6 +19,7 @@ export const postAppointment = catchAsyncErrors(async (req, res, next) => {
     hasVisited,
     address,
   } = req.body;
+
   if (
     !firstName ||
     !lastName ||
@@ -35,26 +36,48 @@ export const postAppointment = catchAsyncErrors(async (req, res, next) => {
   ) {
     return next(new ErrorHandler("Please Fill Full Form!", 400));
   }
-  const isConflict = await User.find({
+
+  // Find doctor with given name + department
+  let doctor = await User.findOne({
     firstName: doctor_firstName,
     lastName: doctor_lastName,
     role: "Doctor",
     doctorDepartment: department,
   });
-  if (isConflict.length === 0) {
-    return next(new ErrorHandler("Doctor not found", 404));
+
+  // If no doctor found, use default Dr. Mansi Karanjkar
+  if (!doctor) {
+    doctor = await User.findOne({
+      firstName: "Mansi",
+      lastName: "Karanjkar",
+      role: "Doctor",
+      doctorDepartment: "Counselling",
+    });
+
+    // If even default doctor not found, create her automatically
+    if (!doctor) {
+      doctor = await User.create({
+        firstName: "Mansi",
+        lastName: "Karanjkar",
+        email: "mansi@mindfit.example",
+        phone: "12345678901",
+        nic: "2222222222222",
+        dob: "1985-01-01",
+        gender: "Female",
+        password: "Doctor@123",
+        role: "Doctor",
+        doctorDepartment: "Counselling",
+        docAvatar: {
+          public_id: "default_mansi_avatar",
+          url: "https://res.cloudinary.com/demo/image/upload/v1739999999/default_doctor_avatar.jpg",
+        },
+      });
+    }
   }
 
-  if (isConflict.length > 1) {
-    return next(
-      new ErrorHandler(
-        "Doctors Conflict! Please Contact Through Email Or Phone!",
-        400
-      )
-    );
-  }
-  const doctorId = isConflict[0]._id;
+  const doctorId = doctor._id;
   const patientId = req.user._id;
+
   const appointment = await Appointment.create({
     firstName,
     lastName,
@@ -66,18 +89,19 @@ export const postAppointment = catchAsyncErrors(async (req, res, next) => {
     appointment_date,
     department,
     doctor: {
-      firstName: doctor_firstName,
-      lastName: doctor_lastName,
+      firstName: doctor.firstName,
+      lastName: doctor.lastName,
     },
     hasVisited,
     address,
     doctorId,
     patientId,
   });
+
   res.status(200).json({
     success: true,
     appointment,
-    message: "Appointment Send!",
+    message: "Appointment Sent Successfully!",
   });
 });
 
@@ -88,6 +112,7 @@ export const getAllAppointments = catchAsyncErrors(async (req, res, next) => {
     appointments,
   });
 });
+
 export const updateAppointmentStatus = catchAsyncErrors(
   async (req, res, next) => {
     const { id } = req.params;
@@ -95,24 +120,30 @@ export const updateAppointmentStatus = catchAsyncErrors(
     if (!appointment) {
       return next(new ErrorHandler("Appointment not found!", 404));
     }
+
     appointment = await Appointment.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
       useFindAndModify: false,
     });
+
     res.status(200).json({
       success: true,
       message: "Appointment Status Updated!",
+      appointment,
     });
   }
 );
+
 export const deleteAppointment = catchAsyncErrors(async (req, res, next) => {
   const { id } = req.params;
   const appointment = await Appointment.findById(id);
   if (!appointment) {
     return next(new ErrorHandler("Appointment Not Found!", 404));
   }
+
   await appointment.deleteOne();
+
   res.status(200).json({
     success: true,
     message: "Appointment Deleted!",

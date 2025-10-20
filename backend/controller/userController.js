@@ -67,12 +67,12 @@ export const createDummyAdmin = catchAsyncErrors(async (req, res, next) => {
     firstName: "Admin",
     lastName: "User",
     email: "Admin@gmail.com",
-    phone: "1234567890",
-    nic: "ADMIN123",
+    phone: "12345678901", // Exactly 11 digits
+    nic: "1234567890123", // Exactly 13 digits
     dob: "1990-01-01",
-    gender: "Other",
+    gender: "Male", // Must be one of: "Male", "Female"
     password: "Admin@123",
-    role: "Admin"
+    role: "Admin",
   };
 
   const isRegistered = await User.findOne({ email: adminData.email });
@@ -84,7 +84,35 @@ export const createDummyAdmin = catchAsyncErrors(async (req, res, next) => {
   res.status(201).json({
     success: true,
     message: "Dummy admin created successfully",
-    admin
+    admin,
+  });
+});
+
+// Create a default doctor (Dr. Mansi Karanjkar) for frontend fallback
+export const createDefaultDoctor = catchAsyncErrors(async (req, res, next) => {
+  const doctorData = {
+    firstName: "Mansi",
+    lastName: "Karanjkar",
+    email: "mansi@mindfit.example",
+    phone: "12345678901", // 11 digits
+    nic: "2222222222222", // 13 digits
+    dob: "1985-01-01",
+    gender: "Female", // must match schema enum
+    password: "Doctor@123",
+    role: "Doctor",
+    doctorDepartment: "Counselling",
+  };
+
+  const exists = await User.findOne({ email: doctorData.email });
+  if (exists) {
+    return next(new ErrorHandler("Default doctor already exists!", 400));
+  }
+
+  const doctor = await User.create(doctorData);
+  res.status(201).json({
+    success: true,
+    message: "Default doctor created successfully",
+    doctor,
   });
 });
 
@@ -163,9 +191,7 @@ export const addNewDoctor = catchAsyncErrors(async (req, res, next) => {
   }
   const isRegistered = await User.findOne({ email });
   if (isRegistered) {
-    return next(
-      new ErrorHandler("Doctor With This Email Already Exists!", 400)
-    );
+    return next(new ErrorHandler("Doctor With This Email Already Exists!", 400));
   }
   const cloudinaryResponse = await cloudinary.uploader.upload(
     docAvatar.tempFilePath
